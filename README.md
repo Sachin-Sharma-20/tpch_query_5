@@ -64,14 +64,14 @@ Make sure these tools are installed and properly configured in your system PATH 
 ### Single-Threaded Execution
 To run the program in single-threaded mode, use the following command:
 ```bash
-./tpch_query5 --r_name ASIA --start_date 1994-01-01 --end_date 1995-01-01 --threads 1 --table_path /path/to/tables --result_path ../output_path/query5.out
+./tpch_query5 --r_name ASIA --start_date 1994-01-01 --end_date 1995-01-01 --threads 1 --table_path /path/to/tables --result_path ../output_path/query5_output.txt
 
 ```
 
 ### Multi-Threaded Execution
 To run the program in multi-threaded mode, specify the number of threads (e.g., 4):
 ```bash
-./tpch_query5 --r_name ASIA --start_date 1994-01-01 --end_date 1995-01-01 --threads 4 --table_path /path/to/tables --result_path ../output_path/query5.out
+./tpch_query5 --r_name ASIA --start_date 1994-01-01 --end_date 1995-01-01 --threads 4 --table_path /path/to/tables --result_path ../output_path/query5_output.txt
 
 ```
 

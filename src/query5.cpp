@@ -1,12 +1,10 @@
 #include "query5.hpp"
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <thread>
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
-#include <map>
 #include <algorithm>
 
 
@@ -397,7 +395,7 @@ PreprocessedData preprocess(
 void threadProcessLineitems(
     const PreprocessedData& processed_data,                 // Pre-filtered data and mappings for efficient lookup
     const std::vector<LineItem>& lineitem_data,             // Chunk of LineItem rows assigned to this thread
-    std::map<std::string, double>& threadResult) {          // Per-thread aggregated result map (nation -> revenue)
+    std::unordered_map<std::string, double>& threadResult) {          // Per-thread aggregated result map (nation -> revenue)
 
     // Iterate over each LineItem in this thread's chunk
     for (int line_index = 0; line_index < lineitem_data.size(); ++line_index) {
@@ -447,7 +445,7 @@ bool executeQuery5(
                                        customer_data, orders_data,
                                        supplier_data, nation_data, region_data);
 
-    std::vector<std::map<std::string, double>> partial_results(num_threads);  // Thread-local results
+    std::vector<std::unordered_map<std::string, double>> partial_results(num_threads);  // Thread-local results
     std::vector<std::thread> threads(num_threads);
 
     // Launch threads to process LineItem chunks in parallel
@@ -459,8 +457,8 @@ bool executeQuery5(
     for (std::thread &th : threads) th.join();   // Wait for threads to finish
 
     // Merge partial thread results into one aggregated map
-    std::map<std::string, double> merged_results;
-    for (const std::map<std::string, double> &partial_result : partial_results)
+    std::unordered_map<std::string, double> merged_results;
+    for (const std::unordered_map<std::string, double> &partial_result : partial_results)
         for (const std::pair<const std::string, double> & cur_result : partial_result)
             merged_results[cur_result.first] += cur_result.second;
 
@@ -476,7 +474,7 @@ bool executeQuery5(
               });
 
     // Output results with high precision
-    std::cout.precision(15);
+    std::cout.precision(13);
     for (const Nation_Revenue& nation_revenue : results)
         std::cout << nation_revenue.NATION << "|" << nation_revenue.REVENUE << "\n";
 
@@ -494,7 +492,7 @@ bool outputResults(const std::string& result_path, const std::vector<Nation_Reve
     }
 
     // Print results
-    output_file.precision(15);
+    output_file.precision(13);
     for (const Nation_Revenue& nation_revenue: results) {
         output_file<<nation_revenue.NATION<<"|"<<nation_revenue.REVENUE<<"\n";
     }
