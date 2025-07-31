@@ -1,0 +1,76 @@
+
+## Report
+
+1. Overview
+
+This report outlines the process and experience of running a TPCH Query 5 implementation, comparing single-threaded and multi-threaded approaches, and addressing challenges encountered during data loading and query execution.
+
+
+2. Running the Program and Generating a Report
+
+Execution:
+The program is executed by specifying the desired parameters, including filters such as region name and date range, number of threads to use, and providing input data vectors.
+
+Output:
+The results of the TPCH Query 5 execution are output to the specified results container or file path, showing aggregated revenue by nation, sorted in descending order.
+
+Performance Analysis:
+The following benchmark data was observed comparing single-threaded and multi-threaded execution:
+
+   Using 1 Thread:
+
+      INDONESIA|115979499.6518
+      CHINA|109568736.2163
+      INDIA|106258458.1656
+      JAPAN|104738341.0311
+      VIETNAM|98052109.1293
+
+      TPCH Query 5 implementation completed.
+      Total RunTime: 157,888.6932 ms
+
+   Using 4 Threads:
+
+      INDONESIA|115979499.6518
+      CHINA|109568736.2163
+      INDIA|106258458.1656
+      JAPAN|104738341.0311
+      VIETNAM|98052109.1293
+
+      TPCH Query 5 implementation completed.
+      Total RunTime: 82,167.9532 ms
+
+This demonstrates that using 4 threads nearly halves the runtime while maintaining consistent result accuracy, showcasing significant performance gains through multithreading.
+
+
+3. Challenges Faced and Their Resolutions
+
+Challenge 1: Inefficient Data Loading Leading to Crashes
+
+Problem:
+   Initially, an attempt was made to load all tables’ data into large, generic data structures such as vectors of maps. This resulted in excessive RAM consumption, leading to program crashes or system instability.
+
+Resolution:
+   To optimize memory usage, focused custom data structures (structs) were created for each table, containing only the necessary and relevant fields required for query processing. This significantly reduced the memory footprint from a crashing state to approximately 400 MB, which is practical for the target environment.
+
+Challenge 2: Single-threaded Data Storage with Multi-threaded Query Execution
+
+Problem:
+   Although query execution used multi-threading to improve performance, the data loading and storage step remained single-threaded. This caused bottlenecks and inefficiencies, as the entire dataset was processed serially during loading, and chunks needed to be created dynamically again for query execution.
+
+Resolution:
+   The loading and storage phase was restructured to leverage multi-threading by dividing the large LineItem table upfront into multiple chunks, each corresponding to the number of threads available. Each thread loads and stores its chunk independently into designated vectors. This approach:
+
+      Eliminates the need to create chunks during query execution.
+
+      Enables direct processing of pre-partitioned data.
+
+      Improves runtime efficiency by balancing data loading and query processing across threads.
+
+      Optimizes resource utilization and reduces total execution time.
+
+
+4. Summary
+
+   Memory Optimization: By carefully designing per-table structures with essential fields, memory consumption was drastically reduced, preventing crashes and allowing smoother execution.
+
+   Parallel Data Loading: Implementing multi-threaded data loading that aligns with the multi-threaded query processing framework improved the overall throughput, minimized overhead, and simplified data management.
