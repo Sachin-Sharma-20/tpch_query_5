@@ -20,7 +20,7 @@ Relevant screenshots demonstrating the program execution and results are located
 
 - **CMake** version 3.10 or higher
 - **C++ compiler** supporting C++20 standard (e.g., GCC 9+, Clang 10+, MSVC 2019+)
-- Build using if using windows `cmake --build .`)
+- For Windows user Build using `cmake --build .`)
 
 Make sure these tools are installed and properly configured in your system PATH before building the project.
 
